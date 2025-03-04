@@ -41,7 +41,6 @@ jobs:
         shell: bash
 
       - name: Upload artifact
-        if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
           name: app-${{ matrix.os }}-build
@@ -63,12 +62,14 @@ jobs:
           git push origin $TAG_NAME
 
       - name: Download macOS artifact
+        if: ${{ needs.build.outputs['macos-latest'].result == 'success' }}
         uses: actions/download-artifact@v4
         with:
           name: app-macos-latest-build
           path: ./dist/macos
 
       - name: Download Windows artifact
+        if: ${{ needs.build.outputs['windows-latest'].result == 'success' }}
         uses: actions/download-artifact@v4
         with:
           name: app-windows-latest-build
