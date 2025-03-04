@@ -31,11 +31,11 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --onefile youtube_scraper.py
+          python -m PyInstaller --onefile app.py
         shell: bash
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: youtube_scraper-${{ matrix.os }}
-          path: dist/youtube_scraper*
+          name: app-${{ matrix.os }}
+          path: dist/app*
