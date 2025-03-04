@@ -1,4 +1,4 @@
-# YouTube Playlist Scraper
+# Khelwa-Builder
 
 This project is a Python-based application that allows users to scrape and manage YouTube playlists. It provides a graphical user interface (GUI) built with `wxPython` and uses libraries like `pytube` and `yt-dlp` to extract playlist and video data. The scraped data is saved in JSON format for further use.
 
