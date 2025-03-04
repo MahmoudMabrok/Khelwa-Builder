@@ -1,0 +1,4 @@
+wxPython
+pytube
+yt-dlp
+pyinstaller

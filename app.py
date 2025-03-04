@@ -134,7 +134,7 @@ def submit_playlists(event):
 
 class MainFrame(wx.Frame):
     def __init__(self):
-        super().__init__(parent=None, title='YouTube Playlist Scraper', size=(800, 600))
+        super().__init__(parent=None, title='Khelwa-Builder', size=(800, 600))
         self.panel = wx.Panel(self)
         self.notebook = wx.Notebook(self.panel)
 
