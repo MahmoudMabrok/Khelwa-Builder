@@ -1,16 +1,24 @@
-name: Build Executable
+name: Build And Release
 
 on:
   push:
     branches:
       - main
+    paths:
+      - '**/*.py'
   pull_request:
     branches:
       - main
+    paths:
+      - '**/*.py'
+  workflow_dispatch:    
 
 jobs:
   build:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -27,12 +35,46 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build executable
+        # Build a single-file executable from app.py using PyInstaller
         run: |
           python -m PyInstaller --onefile app.py
         shell: bash
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-${{ matrix.os }}-build
+          path: dist/app*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: app-ubuntu-latest-build
+          path: ./dist/ubuntu
+      - uses: actions/download-artifact@v2
         with:
           name: app-macos-latest-build
-          path: dist/app*
+          path: ./dist/macos
+      - uses: actions/download-artifact@v2
+        with:
+          name: app-windows-latest-build
+          path: ./dist/windows
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./dist/ubuntu/*
+            ./dist/macos/*
+            ./dist/windows/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
