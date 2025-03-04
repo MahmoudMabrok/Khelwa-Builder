@@ -54,22 +54,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Download Ubuntu artifact
-      #   if: ${{ needs.build.outputs['ubuntu-latest'].result == 'success' }}
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: app-ubuntu-latest-build
-      #     path: ./dist/ubuntu
+      - name: Create Release Tag
+        id: tag
+        run: |
+          TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
 
       - name: Download macOS artifact
-        if: ${{ needs.build.outputs['macos-latest'].result == 'success' }}
         uses: actions/download-artifact@v4
         with:
           name: app-macos-latest-build
           path: ./dist/macos
 
       - name: Download Windows artifact
-        if: ${{ needs.build.outputs['windows-latest'].result == 'success' }}
         uses: actions/download-artifact@v4
         with:
           name: app-windows-latest-build
@@ -78,8 +77,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ env.TAG_NAME }}
           files: |
-            ./dist/ubuntu/*
             ./dist/macos/*
             ./dist/windows/*
         env:
